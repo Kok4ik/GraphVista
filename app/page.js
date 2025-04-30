@@ -10,6 +10,8 @@ export default function Home() {
   const [currentGraph, setCurrentGraph] = useState(null);
   const [selectedVertices, setSelectedVertices] = useState({ from: null, to: null });
   const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
+  const [actions, setActions] = useState([]);
+  const [isModalActions, setIsModalActions] = useState(false);
 
   useEffect(() => {
     setCurrentGraph(new Graph());
@@ -97,6 +99,7 @@ export default function Home() {
     setCurrentGraph(new Graph());
     setIsModalOpen(false);
     setSelectedVertices({ from: null, to: null });
+    setActions([...actions, `граф ${graphs.length + 1} создан.`]);
   }
 
   function startAddGraph() {
@@ -144,6 +147,7 @@ export default function Home() {
     graphs[i] = graphs[graphs.length - 1];
     graphs.pop();
     setGraphs([...graphs]);
+    setActions([...actions, `граф ${i + 1} удалён.`])
   }
   return (
     <div style={{display: 'flex'}}>
@@ -158,14 +162,12 @@ export default function Home() {
             Добавить текст
           </button>
           <button className="menu" onClick={() => setIsModalDeleteOpen(true)}>Удалить граф</button>
-          <button className="menu">Разместить граф</button>
-          <button className="menu">Действия</button>
+          <button className="menu" onClick={() => setIsModalActions(true)}>Действия</button>
           <button className="menu">Алгоритмы</button>
           <button className="menu">Настройки</button>
           <button className="menu">Инструкция</button>
         </div>
         <div style={{display: 'block', marginTop: 'auto'}}>
-          <p>Масштаб: 100%</p>
           <p>Текущий граф: {currentVertices} вершин, {currentEdges} рёбер</p>
           <p>Всего графов: {graphs.length}</p>
           <p>Всего вершин: {totalVertices}</p>
@@ -264,6 +266,17 @@ export default function Home() {
             : <h4>Список графов пуст</h4>
             }
           </div>
+      </Modal>
+      <Modal isOpen={isModalActions} onClose={() => setIsModalActions(false)}>
+        {actions.length !== 0
+        ? actions.map((act, i) => 
+          <h4 key={i}>Действие {i + 1}: {act}</h4>
+        )
+        : <h4>Действий нет</h4>
+        }
+        <button style={{marginTop: '20px', padding: '10px 20px'}} onClick={() => setIsModalActions(false)}>
+          Закрыть
+        </button>
       </Modal>
       <MyGraph graphs={graphs}/>
     </div>
