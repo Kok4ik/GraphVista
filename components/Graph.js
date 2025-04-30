@@ -3,7 +3,7 @@ import React, { useRef, useEffect } from 'react';
 import Viva from 'vivagraphjs';
 
 
-function MyGraph({graphs = []}) {
+function MyGraph({graphs = [], springLength, springCoeff, dragCoeff, gravity}) {
   const graphRef = useRef(null);
   
   useEffect(() => {
@@ -19,8 +19,15 @@ function MyGraph({graphs = []}) {
           graph.addLink(Number(key), ver)
         })
       }
+      const layout = Viva.Graph.Layout.forceDirected(graph, {
+        springLength : springLength,
+        springCoeff : springCoeff,
+        dragCoeff : dragCoeff,
+        gravity : gravity
+      });
       const renderer = Viva.Graph.View.renderer(graph, {
-          container: element
+          container: element,
+          layout: layout
       });
       renderers.push(renderer);
       renderer.run();

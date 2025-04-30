@@ -1,4 +1,5 @@
 'use client'
+import DraggableText from "@/components/DraggableText";
 import MyGraph from "@/components/Graph";
 import Graph from "@/components/GraphClass";
 import Modal from "@/components/Modal";
@@ -12,6 +13,13 @@ export default function Home() {
   const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
   const [actions, setActions] = useState([]);
   const [isModalActions, setIsModalActions] = useState(false);
+  const [texts, setTexts] = useState([]);
+  const [isSettingsModal, setIsSettingsModal] = useState(false);
+  const [springCoeff, setSpringCoeff] = useState(1);
+  const [springLength, setSpringLength] = useState(1);
+  const [dragCoeff, setDragCoeff] = useState(1);
+  const [gravity, setGravity] = useState(1);
+
 
   useEffect(() => {
     setCurrentGraph(new Graph());
@@ -149,6 +157,10 @@ export default function Home() {
     setGraphs([...graphs]);
     setActions([...actions, `граф ${i + 1} удалён.`])
   }
+  function addText() {
+    setTexts([...texts, "Введите текст..."]);
+    setActions([...actions, "добавлен текст."]);
+  }
   return (
     <div style={{display: 'flex'}}>
       <div className="menu">
@@ -158,13 +170,12 @@ export default function Home() {
           </button>
           <button 
           className="menu"
-          >
-            Добавить текст
-          </button>
+          onClick={addText}
+          >Добавить текст</button>
           <button className="menu" onClick={() => setIsModalDeleteOpen(true)}>Удалить граф</button>
           <button className="menu" onClick={() => setIsModalActions(true)}>Действия</button>
           <button className="menu">Алгоритмы</button>
-          <button className="menu">Настройки</button>
+          <button className="menu" onClick={() => setIsSettingsModal(true)}>Настройки</button>
           <button className="menu">Инструкция</button>
         </div>
         <div style={{display: 'block', marginTop: 'auto'}}>
@@ -278,7 +289,44 @@ export default function Home() {
           Закрыть
         </button>
       </Modal>
-      <MyGraph graphs={graphs}/>
+      <Modal isOpen={isSettingsModal} onClose={() => setIsSettingsModal(false)}>
+        <div>
+          <h4>SpringCoeff: </h4>
+          <input
+          type="number"
+          value={springCoeff}
+          onChange={e => setSpringCoeff(e.target.value)}
+          />
+        </div>
+        <div>
+          <h4>SpringLength: </h4>
+          <input
+          type="number"
+          value={springLength}
+          onChange={e => setSpringLength(e.target.value)}
+          />
+        </div>
+        <div>
+          <h4>Gravity: </h4>
+          <input
+          type="number"
+          value={gravity}
+          onChange={e => setGravity(e.target.value)}
+          />
+        </div>
+        <div>
+          <h4>DragCoeff: </h4>
+          <input
+          type="number"
+          value={dragCoeff}
+          onChange={e => setDragCoeff(e.target.value)}
+          />
+        </div>
+      </Modal>
+        {texts.map((t, i) => 
+          <DraggableText initialText={t} key={i}/>
+        )}
+      <MyGraph graphs={graphs} springCoeff={springCoeff} springLength={springLength} dragCoeff={dragCoeff} gravity={gravity}/>    
     </div>
   );
 }
