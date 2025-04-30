@@ -15,10 +15,10 @@ export default function Home() {
   const [isModalActions, setIsModalActions] = useState(false);
   const [texts, setTexts] = useState([]);
   const [isSettingsModal, setIsSettingsModal] = useState(false);
-  const [springCoeff, setSpringCoeff] = useState(1);
-  const [springLength, setSpringLength] = useState(1);
-  const [dragCoeff, setDragCoeff] = useState(1);
-  const [gravity, setGravity] = useState(1);
+  const [springCoeff, setSpringCoeff] = useState(0.0008);
+  const [springLength, setSpringLength] = useState(30);
+  const [dragCoeff, setDragCoeff] = useState(0.02);
+  const [gravity, setGravity] = useState(-1.2);
 
 
   useEffect(() => {
