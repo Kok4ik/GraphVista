@@ -19,6 +19,8 @@ export default function Home() {
   const [springLength, setSpringLength] = useState(30);
   const [dragCoeff, setDragCoeff] = useState(0.02);
   const [gravity, setGravity] = useState(-1.2);
+  
+  
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
