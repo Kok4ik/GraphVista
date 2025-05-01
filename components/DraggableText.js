@@ -9,28 +9,49 @@ const DraggableText = ({ initialText = "Кликните для редактир
   const textRef = useRef(null);
   const inputRef = useRef(null);
 
-  const handleMouseDown = (e) => {
-    if (e.target.tagName === 'INPUT') return;
-    
+  // Обработчик для мыши и сенсорных устройств
+  const handleStart = (clientX, clientY) => {
     const rect = textRef.current.getBoundingClientRect();
     setOffset({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top
+      x: clientX - rect.left,
+      y: clientY - rect.top
     });
     setIsDragging(true);
   };
 
-  const handleMouseMove = (e) => {
+  const handleMove = (clientX, clientY) => {
     if (!isDragging) return;
     
     setPosition({
-      x: e.clientX - offset.x,
-      y: e.clientY - offset.y
+      x: clientX - offset.x,
+      y: clientY - offset.y
     });
   };
 
-  const handleMouseUp = () => {
+  const handleEnd = () => {
     setIsDragging(false);
+  };
+
+  const handleMouseDown = (e) => {
+    if (e.target.tagName === 'INPUT') return;
+    handleStart(e.clientX, e.clientY);
+  };
+
+  const handleTouchStart = (e) => {
+    if (e.target.tagName === 'INPUT') return;
+    const touch = e.touches[0];
+    handleStart(touch.clientX, touch.clientY);
+    e.preventDefault(); // Предотвращаем стандартное поведение
+  };
+
+  const handleMouseMove = (e) => {
+    handleMove(e.clientX, e.clientY);
+  };
+
+  const handleTouchMove = (e) => {
+    const touch = e.touches[0];
+    handleMove(touch.clientX, touch.clientY);
+    e.preventDefault(); // Предотвращаем стандартное поведение
   };
 
   const handleTextClick = () => {
@@ -61,17 +82,27 @@ const DraggableText = ({ initialText = "Кликните для редактир
   }, [isEditing]);
 
   useEffect(() => {
+    const mouseMoveHandler = (e) => handleMouseMove(e);
+    const touchMoveHandler = (e) => handleTouchMove(e);
+    const endHandler = () => handleEnd();
+
     if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
+      document.addEventListener('mousemove', mouseMoveHandler);
+      document.addEventListener('mouseup', endHandler);
+      document.addEventListener('touchmove', touchMoveHandler, { passive: false });
+      document.addEventListener('touchend', endHandler);
     } else {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('mousemove', mouseMoveHandler);
+      document.removeEventListener('mouseup', endHandler);
+      document.removeEventListener('touchmove', touchMoveHandler);
+      document.removeEventListener('touchend', endHandler);
     }
 
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('mousemove', mouseMoveHandler);
+      document.removeEventListener('mouseup', endHandler);
+      document.removeEventListener('touchmove', touchMoveHandler);
+      document.removeEventListener('touchend', endHandler);
     };
   }, [isDragging, offset]);
 
@@ -90,9 +121,11 @@ const DraggableText = ({ initialText = "Кликните для редактир
         border: '1px dashed #ccc',
         borderRadius: '4px',
         minWidth: '100px',
-        minHeight: '20px'
+        minHeight: '20px',
+        touchAction: 'none' // Важно для корректной работы на сенсорных устройствах
       }}
       onMouseDown={handleMouseDown}
+      onTouchStart={handleTouchStart}
       onClick={handleTextClick}
     >
       {isEditing ? (

@@ -18,8 +18,15 @@ div.menu {
   min-height: calc(100vh - 6rem - 2px);
   background-color: white;
   border: black solid 1px;
-  display:grid;
+  display: grid;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 1000;
+  transition: transform 0.3s ease-in-out;
+  margin: 0;
 }
+
 button.menu {
   display: block;
   width: 100%;
@@ -32,7 +39,55 @@ button.menu {
   cursor: pointer;
 }
 button:hover {
-  background-color: rgb(160, 160, 160);
+  background-color: gray;
+}
+
+.menu-toggle {
+  display: none;
+  position: fixed;
+  margin-left: 10px;
+  margin-top: 10px;
+  z-index: 1001;
+  background: white;
+  border: 1px solid black;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+}
+.menu-toggle-ac {
+  margin-left: 7rem;
+}
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: block;
+  }
+  div.menu {
+    transform: translateX(-100%);
+  }
+  div.menu.active {
+    transform: translateX(0);
+  }
+}
+
+.menu-toggle span {
+  display: block;
+  width: 25px;
+  height: 2px;
+  background: black;
+  margin: 5px auto;
+  transition: all 0.3s ease;
+}
+
+.menu-toggle.active span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.menu-toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-toggle.active span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
 }
 div.canvas {
   width: calc(100vw - 10rem);

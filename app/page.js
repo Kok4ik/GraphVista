@@ -15,11 +15,15 @@ export default function Home() {
   const [isModalActions, setIsModalActions] = useState(false);
   const [texts, setTexts] = useState([]);
   const [isSettingsModal, setIsSettingsModal] = useState(false);
-  const [springCoeff, setSpringCoeff] = useState(1);
-  const [springLength, setSpringLength] = useState(1);
-  const [dragCoeff, setDragCoeff] = useState(1);
-  const [gravity, setGravity] = useState(1);
+  const [springCoeff, setSpringCoeff] = useState(0.0008);
+  const [springLength, setSpringLength] = useState(30);
+  const [dragCoeff, setDragCoeff] = useState(0.02);
+  const [gravity, setGravity] = useState(-1.2);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
 
   useEffect(() => {
     setCurrentGraph(new Graph());
@@ -163,7 +167,12 @@ export default function Home() {
   }
   return (
     <div style={{display: 'flex'}}>
-      <div className="menu">
+      <button className={`menu-toggle ${isMenuOpen ? 'menu-toggle-ac' : ' '}`} onClick={toggleMenu}>
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <div className={`menu ${isMenuOpen ? 'active' : ''}`}>
         <div style={{display: 'block'}}>               
           <button className="menu" onClick={startAddGraph}>
             Создать граф
